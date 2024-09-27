@@ -48,10 +48,16 @@ export const config = {
   // https://saucelabs.com/platform/platform-configurator
   //
   capabilities: [
+    // {
+    //   browserName: "firefox",
+    //   "moz:firefoxOptions": {
+    //     args: ["-headless"],
+    //   },
+    // },
     {
-      browserName: "firefox",
-      "moz:firefoxOptions": {
-        args: ["-headless"],
+      browserName: "chrome", // or 'chromium'
+      "goog:chromeOptions": {
+        args: ["headless", "disable-gpu"],
       },
     },
   ],
