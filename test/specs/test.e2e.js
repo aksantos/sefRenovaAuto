@@ -23,7 +23,7 @@ describe("My Login application", async () => {
     await expect(PessoalPage.authenticateSpan).toHaveText("AUTENTICAÇÃO");
     await PessoalPage.authenticate(numeroTituloResidencia, password);
     await expect(PessoalPage.errorSpan).toHaveText(
-      "O título de residência que possui não permite a utilização da funcionalidade",
+      "O título de residência que possui não permite a utilização da funcionalidadE",
       { atStart: true }
     );
   });

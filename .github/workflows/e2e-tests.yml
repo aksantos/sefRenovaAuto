@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - master
+  schedule:
+    - cron: "0 12 * * *"
 
 jobs:
   e2e-tests:
@@ -29,3 +31,29 @@ jobs:
 
       - name: Run end-to-end tests
         run: npm test
+
+      - name: Send Telegram notification on failure
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fetch = require('node-fetch');
+            const botToken = process.env.TELEGRAM_BOT_TOKEN;
+            const chatId = process.env.TELEGRAM_CHAT_ID;
+            const message = `The workflow ${context.workflow} in the repository ${context.repo.owner}/${context.repo.repo} has failed.`;
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+            fetch(url)
+              .then(response => response.json())
+              .then(data => {
+                if (data.ok) {
+                  console.log('Message sent');
+                } else {
+                  console.error('Error sending message:', data);
+                }
+              })
+              .catch(error => {
+                console.error('Fetch error:', error);
+              });
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
